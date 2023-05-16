@@ -1,17 +1,12 @@
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
-
-import { selectConatcts } from 'redux/selectors';
-import { addContact } from 'redux/operations';
-
+import { toast } from 'react-hot-toast';
+import { useCreateContactMutation } from 'redux/contactsAPI';
 import css from './AddContactForm.module.css';
 
-export const AddContactForm = () => {
+export const AddContactForm = ({ contacts }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const dispatch = useDispatch();
-  const contacts = useSelector(selectConatcts);
+  const [createContact, { isLoading }] = useCreateContactMutation();
 
   const handleInputsChange = e => {
     const { name, value } = e.currentTarget;
@@ -45,8 +40,13 @@ export const AddContactForm = () => {
       reset();
       return;
     }
-    dispatch(addContact({ name, number }));
+    const newContact = {
+      name,
+      number,
+    };
+    createContact(newContact);
     reset();
+    toast.success('Contact added!');
   };
 
   return (
@@ -77,7 +77,9 @@ export const AddContactForm = () => {
           required
         />
       </div>
-      <button type="submit">Add contact</button>
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? 'Adding contact...' : 'Add contact'}
+      </button>
     </form>
   );
 };

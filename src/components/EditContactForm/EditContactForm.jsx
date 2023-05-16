@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { editContact } from 'redux/operations';
+import { toast } from 'react-hot-toast';
+import { useUpdateContactMutation } from 'redux/contactsAPI';
 import css from './EditContactForm.module.css';
 
 export const EditContactForm = ({ onClose, name, number, id }) => {
   const [editedName, setEditedName] = useState(name);
   const [editedNumber, setEditedNumber] = useState(number);
-  const dispatch = useDispatch();
+  const [updateContact] = useUpdateContactMutation();
 
   const handleInputsChange = e => {
     const { name, value } = e.currentTarget;
@@ -29,8 +29,14 @@ export const EditContactForm = ({ onClose, name, number, id }) => {
   };
 
   const handleSubmit = e => {
+    const updatedContact = {
+      name: editedName,
+      number: editedNumber,
+      id,
+    };
+    updateContact(updatedContact);
+    toast.success('Contact changed!');
     e.preventDefault();
-    dispatch(editContact({ editedName, editedNumber, id }));
     reset();
     onClose();
   };
