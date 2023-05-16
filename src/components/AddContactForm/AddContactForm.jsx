@@ -36,7 +36,7 @@ export const AddContactForm = ({ contacts }) => {
     );
 
     if (isInContacts) {
-      alert(`${name} is already in contacts`);
+      toast.error(`${name} is already in contacts`);
       reset();
       return;
     }

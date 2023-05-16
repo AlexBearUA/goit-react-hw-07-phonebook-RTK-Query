@@ -29,6 +29,7 @@ export const EditContactForm = ({ onClose, name, number, id }) => {
   };
 
   const handleSubmit = e => {
+    e.preventDefault();
     const updatedContact = {
       name: editedName,
       number: editedNumber,
@@ -36,7 +37,6 @@ export const EditContactForm = ({ onClose, name, number, id }) => {
     };
     updateContact(updatedContact);
     toast.success('Contact changed!');
-    e.preventDefault();
     reset();
     onClose();
   };
