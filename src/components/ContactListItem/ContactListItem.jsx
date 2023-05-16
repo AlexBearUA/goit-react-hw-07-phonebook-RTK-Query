@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Modal } from 'components/Modal/Modal';
+import { ButtonLoader } from 'components/Loaders/ButtonLoader';
 import { EditContactForm } from 'components/EditContactForm/EditContactForm';
 import { useDeleteContactMutation } from 'redux/contactsAPI';
 import css from './ContactListItem.module.css';
@@ -15,6 +16,15 @@ export const ContactListItem = ({ name, number, id }) => {
     setModal(!isModalOpen);
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteContact(id);
+      toast.success('Contact deleted!');
+    } catch (error) {
+      toast.error('Contact not deleted!');
+    }
+  };
+
   return (
     <>
       <p>
@@ -24,12 +34,18 @@ export const ContactListItem = ({ name, number, id }) => {
         <button onClick={toggleModal}>Edit</button>
         <button
           onClick={() => {
-            deleteContact(id);
-            toast.error('Contact deleted!');
+            handleDelete();
           }}
           disabled={isLoading}
         >
-          {isLoading ? 'Deliting...' : 'Delete'}
+          {isLoading ? (
+            <>
+              <ButtonLoader />
+              <span>Deliting...</span>
+            </>
+          ) : (
+            <span>Delete</span>
+          )}
         </button>
       </div>
       {isModalOpen && (

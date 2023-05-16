@@ -10,13 +10,3 @@
 .ContactListItem {
   display: flex;
 }
-
-.ContactListItem button {
-  cursor: pointer;
-  border-radius: 5px;
-  padding: 5px 15px;
-  margin-left: auto;
-}
-.ContactListItem button:hover {
-  background-color: antiquewhite;
-}

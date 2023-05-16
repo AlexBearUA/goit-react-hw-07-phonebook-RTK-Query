@@ -15,8 +15,13 @@
   margin-left: 20px;
 }
 .contactForm button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
   border-radius: 5px;
-  width: 150px;
+  width: 170px;
   padding: 5px 15px;
   cursor: pointer;
 }

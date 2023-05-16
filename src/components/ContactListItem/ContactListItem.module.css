@@ -3,3 +3,19 @@
   display: flex;
   gap: 10px;
 }
+
+.ItemButtons button {
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px 15px;
+  margin-left: auto;
+}
+
+.ItemButtons button:hover {
+  background-color: antiquewhite;
+}

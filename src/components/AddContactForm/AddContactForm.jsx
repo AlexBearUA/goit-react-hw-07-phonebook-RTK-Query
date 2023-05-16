@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useCreateContactMutation } from 'redux/contactsAPI';
+import { ButtonLoader } from 'components/Loaders/ButtonLoader';
 import css from './AddContactForm.module.css';
 
 export const AddContactForm = ({ contacts }) => {
@@ -28,6 +29,15 @@ export const AddContactForm = ({ contacts }) => {
     setNumber('');
   };
 
+  const handleCreateContact = async newContact => {
+    try {
+      await createContact(newContact);
+      toast.success('Contact added!');
+    } catch (error) {
+      toast.error('Contact not added!');
+    }
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
 
@@ -44,9 +54,9 @@ export const AddContactForm = ({ contacts }) => {
       name,
       number,
     };
-    createContact(newContact);
+
+    handleCreateContact(newContact);
     reset();
-    toast.success('Contact added!');
   };
 
   return (
@@ -78,7 +88,13 @@ export const AddContactForm = ({ contacts }) => {
         />
       </div>
       <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Adding contact...' : 'Add contact'}
+        {isLoading ? (
+          <>
+            <ButtonLoader /> <span>Adding contact...</span>
+          </>
+        ) : (
+          <span>Add contact</span>
+        )}
       </button>
     </form>
   );

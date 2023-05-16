@@ -4,7 +4,7 @@ import { selectFilter } from 'redux/filterSlice';
 import { AddContactForm } from './AddContactForm/AddContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
-import { Loader } from './Loader/Loader';
+import { Loader } from './Loaders/Loader';
 import { useGetContactsQuery } from 'redux/contactsAPI';
 import css from './App.module.css';
 

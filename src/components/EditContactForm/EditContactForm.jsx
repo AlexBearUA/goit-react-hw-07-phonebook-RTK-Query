@@ -28,6 +28,15 @@ export const EditContactForm = ({ onClose, name, number, id }) => {
     setEditedNumber('');
   };
 
+  const handleUpdateContact = async updatedContact => {
+    try {
+      await updateContact(updatedContact);
+      toast.success('Contact changed!');
+    } catch (error) {
+      toast.error('Contact not changed!');
+    }
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     const updatedContact = {
@@ -35,8 +44,8 @@ export const EditContactForm = ({ onClose, name, number, id }) => {
       number: editedNumber,
       id,
     };
-    updateContact(updatedContact);
-    toast.success('Contact changed!');
+    handleUpdateContact(updatedContact);
+
     reset();
     onClose();
   };
