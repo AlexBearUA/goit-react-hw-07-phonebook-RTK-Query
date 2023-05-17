@@ -3,25 +3,37 @@ import { toast } from 'react-hot-toast';
 import { Modal } from 'components/Modal/Modal';
 import { ButtonLoader } from 'components/Loaders/ButtonLoader';
 import { EditContactForm } from 'components/EditContactForm/EditContactForm';
-import { useDeleteContactMutation } from 'redux/contactsAPI';
+import {
+  useDeleteContactMutation,
+  useUpdateContactMutation,
+} from 'redux/contactsAPI';
 import css from './ContactListItem.module.css';
-
 import PropTypes from 'prop-types';
 
 export const ContactListItem = ({ name, number, id }) => {
-  const [deleteContact, { isLoading }] = useDeleteContactMutation();
+  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+  const [updateContact, { isLoading: isUpdating }] = useUpdateContactMutation();
   const [isModalOpen, setModal] = useState(false);
 
   const toggleModal = () => {
     setModal(!isModalOpen);
   };
 
-  const handleDelete = async () => {
+  const handleDeleteContact = async () => {
     try {
       await deleteContact(id);
       toast.success('Contact deleted!');
     } catch (error) {
       toast.error('Contact not deleted!');
+    }
+  };
+
+  const handleUpdateContact = async updatedContact => {
+    try {
+      await updateContact(updatedContact);
+      toast.success('Contact changed!');
+    } catch (error) {
+      toast.error('Contact not changed!');
     }
   };
 
@@ -31,14 +43,23 @@ export const ContactListItem = ({ name, number, id }) => {
         {name}: {number}
       </p>
       <div className={css.ItemButtons}>
-        <button onClick={toggleModal}>Edit</button>
+        <button onClick={toggleModal} disabled={isUpdating}>
+          {isUpdating ? (
+            <>
+              <ButtonLoader />
+              <span>Editing...</span>
+            </>
+          ) : (
+            <span>Edit</span>
+          )}
+        </button>
         <button
           onClick={() => {
-            handleDelete();
+            handleDeleteContact();
           }}
-          disabled={isLoading}
+          disabled={isDeleting}
         >
-          {isLoading ? (
+          {isDeleting ? (
             <>
               <ButtonLoader />
               <span>Deliting...</span>
@@ -51,6 +72,7 @@ export const ContactListItem = ({ name, number, id }) => {
       {isModalOpen && (
         <Modal onClose={toggleModal}>
           <EditContactForm
+            onEditSubmit={handleUpdateContact}
             onClose={toggleModal}
             name={name}
             number={number}
