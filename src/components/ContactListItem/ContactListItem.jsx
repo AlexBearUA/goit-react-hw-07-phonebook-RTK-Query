@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Modal } from 'components/Modal/Modal';
 import { ButtonLoader } from 'components/Loaders/ButtonLoader';
@@ -11,37 +11,36 @@ import css from './ContactListItem.module.css';
 import PropTypes from 'prop-types';
 
 export const ContactListItem = ({ name, number, id }) => {
-  const [deleteContact, { isLoading: isDeleting, isSuccess }] =
-    useDeleteContactMutation();
-  const [updateContact, { isLoading: isUpdating }] = useUpdateContactMutation();
+  const [
+    deleteContact,
+    {
+      isLoading: isDeleting,
+      isSuccess: isSuccessDeleting,
+      isError: isErrorDeleting,
+    },
+  ] = useDeleteContactMutation();
+
+  const [
+    updateContact,
+    {
+      isLoading: isUpdating,
+      isSuccess: isSuccessUpdating,
+      isError: isErrorUpdating,
+    },
+  ] = useUpdateContactMutation();
+
   const [isModalOpen, setModal] = useState(false);
 
   const toggleModal = () => {
     setModal(!isModalOpen);
   };
 
-  const handleDeleteContact = async () => {
-    try {
-      await deleteContact(id);
-      console.log(isSuccess);
-
-      if (isSuccess) {
-        toast.success('Contact deleted!');
-      }
-    } catch (error) {
-      toast.error('Contact not deleted!');
-    }
-  };
-
-  const handleUpdateContact = async updatedContact => {
-    try {
-      await updateContact(updatedContact);
-      console.log(isSuccess);
-      toast.success('Contact changed!');
-    } catch (error) {
-      toast.error('Contact not changed!');
-    }
-  };
+  useEffect(() => {
+    isSuccessDeleting && toast.success('Contact deleted!');
+    isSuccessUpdating && toast.success('Contact updated!');
+    isErrorDeleting && toast.error('Contact not deleted!');
+    isErrorUpdating && toast.error('Contact not updated!');
+  }, [isSuccessDeleting, isSuccessUpdating, isErrorDeleting, isErrorUpdating]);
 
   return (
     <>
@@ -61,14 +60,14 @@ export const ContactListItem = ({ name, number, id }) => {
         </button>
         <button
           onClick={() => {
-            handleDeleteContact();
+            deleteContact(id);
           }}
           disabled={isDeleting}
         >
           {isDeleting ? (
             <>
               <ButtonLoader />
-              <span>Deliting...</span>
+              <span>Deleting...</span>
             </>
           ) : (
             <span>Delete</span>
@@ -78,7 +77,7 @@ export const ContactListItem = ({ name, number, id }) => {
       {isModalOpen && (
         <Modal onClose={toggleModal}>
           <EditContactForm
-            onEditSubmit={handleUpdateContact}
+            onEditSubmit={updateContact}
             onClose={toggleModal}
             name={name}
             number={number}
