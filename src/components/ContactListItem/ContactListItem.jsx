@@ -11,7 +11,8 @@ import css from './ContactListItem.module.css';
 import PropTypes from 'prop-types';
 
 export const ContactListItem = ({ name, number, id }) => {
-  const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+  const [deleteContact, { isLoading: isDeleting, isSuccess }] =
+    useDeleteContactMutation();
   const [updateContact, { isLoading: isUpdating }] = useUpdateContactMutation();
   const [isModalOpen, setModal] = useState(false);
 
@@ -22,7 +23,11 @@ export const ContactListItem = ({ name, number, id }) => {
   const handleDeleteContact = async () => {
     try {
       await deleteContact(id);
-      toast.success('Contact deleted!');
+      console.log(isSuccess);
+
+      if (isSuccess) {
+        toast.success('Contact deleted!');
+      }
     } catch (error) {
       toast.error('Contact not deleted!');
     }
@@ -31,6 +36,7 @@ export const ContactListItem = ({ name, number, id }) => {
   const handleUpdateContact = async updatedContact => {
     try {
       await updateContact(updatedContact);
+      console.log(isSuccess);
       toast.success('Contact changed!');
     } catch (error) {
       toast.error('Contact not changed!');
